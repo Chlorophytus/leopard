@@ -15,7 +15,6 @@ module vgainterval
     output logic vsync,
     output logic hblank,
     output logic vblank,
-    output logic select,
     output logic unsigned [11:0] x,
     output logic unsigned [11:0] y);
     always_ff@(posedge aclk or negedge aresetn) begin
@@ -24,17 +23,11 @@ module vgainterval
         else
             x <= x - 12'h001;
     end
-    always_ff@(posedge hblank or negedge aresetn) begin
-        if(~aresetn | ~(|y))
+    always_ff@(posedge aclk or negedge aresetn) begin
+        if(~aresetn | (~(|y) & ~(|x)))
             y <= HBPRCH - 12'h001;
-        else 
+        else if(~(|x))
             y <= y - 12'h001;
-    end
-    always_ff@(posedge vblank or negedge aresetn) begin
-        if(~aresetn)
-            select <= 1'b0;
-        else
-            select <= ~select;
     end
     always_comb begin
         case(x) inside

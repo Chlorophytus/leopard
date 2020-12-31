@@ -18,7 +18,7 @@ module vgainterval_sim;
     initial begin
         aclk <= 1'b0;
         aresetn <= 1'b0;
-        #5ns aresetn <= 1'b1;
-        forever #5ns aclk <= ~aclk;
+        #10ns aresetn <= 1'b1;
+        forever #10ns aclk <= ~aclk;
     end
 endmodule: vgainterval_sim
