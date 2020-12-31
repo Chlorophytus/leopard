@@ -12,7 +12,7 @@ module leopard_rtl
     output wire [3:0] datab);
     wire [11:0] x;
     wire [11:0] y;
-    vgainterval interval(
+    vga_interval interval(
         .aclk(aclk),
         .aresetn(aresetn),
         .hsync(hsync),

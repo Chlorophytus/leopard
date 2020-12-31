@@ -1,6 +1,7 @@
 `timescale 1ns / 1ps
 `default_nettype none
-module vgainterval
+// Interval Generator
+module vga_interval
   #(parameter W = 640,
     parameter WFPRCH = 664,
     parameter WBLANK = 720,
@@ -17,18 +18,27 @@ module vgainterval
     output logic vblank,
     output logic unsigned [11:0] x,
     output logic unsigned [11:0] y);
+    // ========================================================================
+    // X track
+    // ========================================================================
     always_ff@(posedge aclk or negedge aresetn) begin
         if(~aresetn | ~(|x))
             x <= WBPRCH - 12'h001;
         else
             x <= x - 12'h001;
     end
+    // ========================================================================
+    // Y track
+    // ========================================================================
     always_ff@(posedge aclk or negedge aresetn) begin
         if(~aresetn | (~(|y) & ~(|x)))
             y <= HBPRCH - 12'h001;
         else if(~(|x))
             y <= y - 12'h001;
     end
+    // ========================================================================
+    // Combinatorial hblank and vblank tracks
+    // ========================================================================
     always_comb begin
         case(x) inside
             WBPRCH - 12'h001: {hblank, hsync} = 2'b11;
@@ -45,4 +55,4 @@ module vgainterval
             default: ;
         endcase
     end
-endmodule: vgainterval
+endmodule: vga_interval
