@@ -16,38 +16,38 @@ module vga_interval
     output logic vsync,
     output logic hblank,
     output logic vblank,
-    output logic unsigned [11:0] x,
-    output logic unsigned [11:0] y);
+    output logic unsigned [11:0] px,
+    output logic unsigned [11:0] py);
     // ========================================================================
     // X track
     // ========================================================================
     always_ff@(posedge aclk or negedge aresetn) begin
-        if(~aresetn | ~(|x))
-            x <= WBPRCH - 12'h001;
+        if(~aresetn | ~(|px))
+            px <= WBPRCH - 12'h001;
         else
-            x <= x - 12'h001;
+            px <= px - 12'h001;
     end
     // ========================================================================
     // Y track
     // ========================================================================
     always_ff@(posedge aclk or negedge aresetn) begin
-        if(~aresetn | (~(|y) & ~(|x)))
-            y <= HBPRCH - 12'h001;
-        else if(~(|x))
-            y <= y - 12'h001;
+        if(~aresetn | (~(|py) & ~(|px)))
+            py <= HBPRCH - 12'h001;
+        else if(~(|px))
+            py <= py - 12'h001;
     end
     // ========================================================================
     // Combinatorial hblank and vblank tracks
     // ========================================================================
     always_comb begin
-        case(x) inside
+        case(px) inside
             WBPRCH - 12'h001: {hblank, hsync} = 2'b11;
             WBLANK - 12'h001: {hblank, hsync} = 2'b10;
             WFPRCH - 12'h001: {hblank, hsync} = 2'b11;
             W - 12'h001: {hblank, hsync} = 2'b01;
             default: ;
         endcase
-        case(y) inside
+        case(py) inside
             HBPRCH - 12'h001: {vblank, vsync} = 2'b10;
             HBLANK - 12'h001: {vblank, vsync} = 2'b11;
             HFPRCH - 12'h001: {vblank, vsync} = 2'b10;

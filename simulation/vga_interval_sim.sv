@@ -10,8 +10,8 @@ module vga_interval_sim;
     logic vblank;
     logic select;
 
-    logic unsigned [11:0] x;
-    logic unsigned [11:0] y;
+    logic unsigned [11:0] px;
+    logic unsigned [11:0] py;
     
     vga_interval dut(.*);
     

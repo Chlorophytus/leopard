@@ -11,8 +11,8 @@ module shader_tcache
     input wire logic dma_en,
     input wire logic unsigned [3:0] dma_data[TCACHE_WIDTH**2],
     input wire logic unsigned [(TCACHE_WIDTH**2)-1:0] dma_mask,
-    input wire logic unsigned [TCACHE_SIZE-1:0] u,
-    input wire logic unsigned [TCACHE_SIZE-1:0] v,
+    input wire logic unsigned [TCACHE_SIZE-1:0] tu,
+    input wire logic unsigned [TCACHE_SIZE-1:0] tv,
     output logic unsigned [3:0] rdata);
     localparam TCACHE_WIDTH = 2 ** TCACHE_SIZE;
     logic unsigned [3:0] tcache[TCACHE_WIDTH**2];
@@ -35,7 +35,7 @@ module shader_tcache
         if(~aresetn)
             rdata <= 4'h0;
         else if(~dma_en & state[2])
-            rdata <= tcache[u + (v * TCACHE_WIDTH)];
+            rdata <= tcache[tu + (tv * TCACHE_WIDTH)];
     end: read_register
     // ========================================================================
     // Write/DMA handling
