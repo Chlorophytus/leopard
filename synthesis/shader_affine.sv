@@ -19,15 +19,15 @@ module shader_affine
     input wire logic unsigned [11:0] qm[4],
     output logic unsigned [11:0] tu,
     output logic unsigned [11:0] tv);
-    logic unsigned [5:0] state = 6'b000000;
+    logic unsigned [1:0] state = 2'b000000;
     // ========================================================================
     // State machine
     // ========================================================================
     always_ff@(posedge aclk or negedge aresetn) begin: state_machine
         if(~aresetn)
-            state <= 6'b000000;
+            state <= 2'b00;
         else if(strobe & ~(|state) & ~wen)
-            state <= 6'b000001;
+            state <= 2'b01;
         else
             state <= state << 1;
     end: state_machine
@@ -89,11 +89,11 @@ module shader_affine
     logic unsigned [23:0] accum_yprime;
     always_comb begin: multiply
         case(state) inside
-            6'b000100: accum_xprime = (r_qm[0] * r_qx) + (r_qm[1] * r_qy) +
+            2'b01: accum_xprime = (r_qm[0] * r_qx) + (r_qm[1] * r_qy) +
                                       {12'h000, r_qx0};
-            6'b100000: accum_yprime = (r_qm[2] * r_qx) + (r_qm[3] * r_qy) +
+            2'b10: accum_yprime = (r_qm[2] * r_qx) + (r_qm[3] * r_qy) +
                                       {12'h000, r_qx0};
-            6'b000000: {tu, tv} = {accum_xprime[23:12], accum_yprime[23:12]};
+            2'b00: {tu, tv} = {accum_xprime[23:12], accum_yprime[23:12]};
             default: ;
         endcase
     end: multiply
